@@ -26,6 +26,10 @@
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script src="//d3js.org/colorbrewer.v1.min.js"></script>
     <script src="//d3js.org/queue.v1.min.js"></script>
+
+    <!-- D3 Tip -->
+    <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
     
 
 
@@ -107,24 +111,11 @@
             fill: black;
         }
 
-        /*popup style*/
-        div.tooltip {
-            position: absolute;
-            text-align: center;
-            width: 110px;
-            padding: 2px;
-            font: 12px sans-serif;
-            color: white;
-            background: black;
-            border: 0px;
-            border-radius: 8px;
-            pointer-events: none;
-                }
-
+    
         .subunit {
             fill: white;
-            stroke: lightgray;
-            stroke-width: 1px;
+            stroke: darkgray;
+            stroke-width: 0.25px;
         }
 
         .subunit:hover {
@@ -153,18 +144,12 @@
             stroke: gray;
         }
 
-        .circles {
-            fill-opacity: .55;
-            stroke: gray;
-            stroke-width: .5px;
-      }
 
         </style>
 </head>
 <body>
     <h1>Flu Vaccine Efficiency in California</h1>
-    <p>Counties distribute flu vaccines each year, but not all of them are used up. In the map below, there's a bubble for each California county. The larger the bubble, the more yearly vaccines the county receives on average (2008-2012). The darker the color, the more is left unused each year.</p>
-    <p>Take a look at places like Alameda County, where efficiency is very high and volume is very high. But many places, including some large counties like Orange County, leave much of their vaccines on the table at the end of the year.</p>
+    <p>Counties distribute flu vaccines each year, but not all of them are used up. In the map below, each California county is shaded according to the percentage of vaccines it leaves unused each year on average (2008-2012). The darker the color, the more is left unused.</p>
 
     <div id="map"></div>
 

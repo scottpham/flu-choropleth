@@ -12,7 +12,7 @@ var margin = {
     left: 20
 };
 
-var circleSize = 70;
+//var circleSize = 70;
 
 var colors = {
     'red1': '#6C2315', 'red2': '#A23520', 'red3': '#D8472B', 'red4': '#E27560', 'red5': '#ECA395', 'red6': '#F5D1CA',
@@ -39,7 +39,7 @@ function render(width) {
 
     var height = .88 * width;
 
-    var circleSize = 0.065 * width;
+    //var circleSize = 0.065 * width;
 
     var  projection = d3.geo.mercator()
         .scale(width*4)
@@ -84,26 +84,29 @@ function render(width) {
             .domain([.1, .2, .3, .4])
             .range(colorbrewer.Blues[4]);
             
-        //attach data to circle areas
-        var areas = mapData.features.map(
-            function(d) {return vacByCounty[d.properties.name];})
+        //format for # of vaccines
+        var commaFormat = d3.format(",f")
 
-        //scale for circle
-        var scale = d3.scale.sqrt()
-            .domain(d3.extent(areas))
-            .range([4, circleSize]);
+        //define tip
+        var tip = d3.tip()
+            .attr("class", 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) { return "<p>" + d.properties.fullName + "</p><p>% Unused: " + percentFormat(fluByCounty[d.properties.name]) + "</p><p># Vaccines Available: " + commaFormat(vacByCounty[d.properties.name]) + "</p>"});
 
+        svg.call(tip);
         //draw county shapes
         svg.selectAll(".subunit")
               .data(mapData.features)
             .enter().append("path")
             .attr("class", function(d) { return "subunit " + d.properties.name; })
-            .attr("d", path);
-              // // get color from csv call
-              // .style("fill", function(d){ 
-              //   return color(fluByCounty[d.properties.name]);
-        
-              // });
+            .attr("d", path)
+              // get color from csv call
+              .style("fill", function(d){ 
+                return color(fluByCounty[d.properties.name]);
+              })
+
+            .on("mouseover", tip.show)
+            .on("mouseout", tip.hide);
 
         //exterior border
         svg.append("path")
@@ -120,34 +123,7 @@ function render(width) {
         var percentFormat = function(d){
             if (d) { return (d3.format(".1%"))(d) }
             else { return "N/A"}
-            }
-
-        //circles
-        svg.append("g")
-              .attr("class", "circles")
-            .selectAll("circle")
-                  .data(topojson.feature(ca, ca.objects.subunits).features)
-                .enter().append("circle")
-                    .attr("transform", function(d) { return 'translate(' + path.centroid(d) + ')';})
-                  .attr("r", function(d) { return scale(vacByCounty[d.properties.name]); })
-            .style("fill", function(d){ 
-                return color(fluByCounty[d.properties.name]);
-              })
-                .on("mouseover", function(d){ //tooltip
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    div.html(d.properties.fullName + "<p>% Unused: " + percentFormat(fluByCounty[d.properties.name]) + "</p><p># Vaccines Available: " + vacByCounty[d.properties.name] + "</p>"
-
-                    )
-                        .style("left", (d3.event.pageX) + 10 + "px")
-                        .style("top", (d3.event.pageY - 30) + "px"); 
-                })
-                .on("mouseout", function(d) { 
-                    div.transition()
-                        .duration(500)
-                        .style("opacity", 0.0);
-                });        
+            } 
 
     //key position encoding for legend
     var y = d3.scale.linear()
