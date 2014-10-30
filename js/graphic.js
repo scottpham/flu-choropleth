@@ -39,8 +39,6 @@ function render(width) {
 
     var height = .88 * width;
 
-    //var circleSize = 0.065 * width;
-
     var  projection = d3.geo.mercator()
         .scale(width*4)
         .center([-124.19, 41.92]) //exact upper left of california according to latlong.net
@@ -104,7 +102,6 @@ function render(width) {
               .style("fill", function(d){ 
                 return color(fluByCounty[d.properties.name]);
               })
-
             .on("mouseover", tip.show)
             .on("mouseout", tip.hide);
 
@@ -189,13 +186,10 @@ function render(width) {
  */
 $(window).load(function() {
     if (Modernizr.svg){
-        pymChild = new pym.Child({
-            renderCallback: draw_graphic()
-        });
+        $('#graphic').empty();
+        renderCallback: draw_graphic();
     }
-    else { pymChild = new pym.Child();
-    }
-})
+});
 
 
 
